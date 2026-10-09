@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Database Admin | FlowerAdmin</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        .db-page {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .db-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .db-title h1 {
+            font-size: 27px;
+            margin: 0 0 8px;
+            color: #252238;
+        }
+
+        .db-title p {
+            margin: 0;
+            color: #85859a;
+        }
+
+        .db-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: #7657df;
+            text-decoration: none;
+            border: 1px solid #e5e3ee;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+
+        .db-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border-radius: 9px;
+            color: #247d65;
+            background: #e9faf3;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .db-status.error {
+            color: #b93648;
+            background: #fff0f2;
+        }
+
+        .db-cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .db-card {
+            background: #fff;
+            border: 1px solid #ecebf3;
+            border-radius: 14px;
+            padding: 23px;
+        }
+
+        .db-card span {
+            display: block;
+            color: #86859a;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .db-card strong {
+            font-size: 30px;
+            color: #29253f;
+        }
+
+        .db-panel {
+            background: white;
+            border: 1px solid #ecebf3;
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .db-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .db-tab {
+            border: 1px solid #e8e4f3;
+            background: #f8f7fc;
+            color: #77748d;
+            border-radius: 9px;
+            padding: 11px 16px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .db-tab.active {
+            background: #7657df;
+            color: white;
+            border-color: #7657df;
+        }
+
+        .db-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 17px;
+        }
+
+        .db-search {
+            width: min(100%, 350px);
+            border: 1px solid #e5e3ed;
+            border-radius: 9px;
+            padding: 12px 14px;
+            font: inherit;
+            outline-color: #7657df;
+        }
+
+        .db-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .db-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: white;
+            color: #6756b0;
+            border: 1px solid #dfdaee;
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-decoration: none;
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .db-button.primary {
+            background: #7657df;
+            border-color: #7657df;
+            color: white;
+        }
+
+        .db-button.danger {
+            color: #d24862;
+            border-color: #f2ccd5;
+        }
+
+        .db-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        .db-table th {
+            text-align: left;
+            background: #f8f8fc;
+            font-size: 11px;
+            color: #8a8ba0;
+            text-transform: uppercase;
+            padding: 14px;
+        }
+
+        .db-table td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f0eff5;
+            color: #353247;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .db-table td strong {
+            color: #29253f;
+        }
+
+        .db-status-select {
+            max-width: 175px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd8f0;
+            background: #f8f6ff;
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .db-empty {
+            text-align: center;
+            color: #9996a9;
+            padding: 35px !important;
+        }
+
+        .db-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(26,22,43,.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 18px;
+        }
+
+        .db-modal[hidden] {
+            display: none;
+        }
+
+        .db-modal-card {
+            background: white;
+            width: min(100%, 720px);
+            max-height: 88vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .db-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 20px 0;
+        }
+
+        .db-detail-item {
+            background: #f8f8fc;
+            border-radius: 9px;
+            padding: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .db-detail-item small {
+            display: block;
+            color: #9290a3;
+            margin-bottom: 5px;
+        }
+
+        .db-detail-item strong {
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+
+        .db-detail-img {
+            width: 160px;
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .db-page { padding: 15px; }
+            .db-cards { grid-template-columns: 1fr; }
+            .db-detail { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <script src="/database-admin.js" defer></script>
+</head>
+
+<body style="background:#f7f8fc;">
+
+<main class="db-page">
+
+    <div class="db-top">
+        <div class="db-title">
+            <h1>
+                <i class="bi bi-database-gear"></i>
+                Database Admin
+            </h1>
+            <p>
+                Quản lý trực tiếp dữ liệu MySQL FlowerAdmin
+            </p>
+        </div>
+
+        <a class="db-back" href="/dashboard.html">
+            <i class="bi bi-arrow-left"></i>
+            Về Dashboard
+        </a>
+    </div>
+
+    <div id="connectionStatus"
+         class="db-status">
+        <i class="bi bi-arrow-repeat"></i>
+        Đang kiểm tra MySQL...
+    </div>
+
+    <div class="db-cards">
+        <div class="db-card">
+            <span>Tổng đơn hàng</span>
+            <strong id="orderCount">0</strong>
+        </div>
+
+        <div class="db-card">
+            <span>Sản phẩm hoa</span>
+            <strong id="flowerCount">0</strong>
+        </div>
+
+        <div class="db-card">
+            <span>Số tiệm hoa</span>
+            <strong id="shopCount">0</strong>
+        </div>
+    </div>
+
+    <section class="db-panel">
+
+        <div class="db-tabs">
+            <button class="db-tab active"
+                    data-type="orders">
+                <i class="bi bi-bag-check"></i>
+                Đơn hàng
+            </button>
+
+            <button class="db-tab"
+                    data-type="flowers">
+                <i class="bi bi-flower2"></i>
+                Sản phẩm hoa
+            </button>
+
+            <button class="db-tab"
+                    data-type="shops">
+                <i class="bi bi-shop"></i>
+                Tiệm hoa
+            </button>
+        </div>
+
+        <div class="db-toolbar">
+            <input class="db-search"
+                   id="dbSearch"
+                   placeholder="Tìm trong dữ liệu..."
+                   autocomplete="off">
+
+            <div class="db-actions">
+                <button class="db-button"
+                        id="refreshData">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Làm mới
+                </button>
+
+                <a class="db-button primary"
+                   id="addRecord"
+                   href="/form.html?type=orders">
+                    <i class="bi bi-plus-lg"></i>
+                    Thêm mới
+                </a>
+            </div>
+        </div>
+
+        <div class="db-table-wrap">
+            <table class="db-table">
+                <thead id="dbTableHead"></thead>
+                <tbody id="dbTableBody"></tbody>
+            </table>
+        </div>
+
+        <p id="resultInfo"
+           style="color:#9593a5;font-size:12px;margin-top:15px;">
+        </p>
+
+    </section>
+</main>
+
+<!-- XEM CHI TIẾT -->
+<div class="db-modal" id="detailModal" hidden>
+    <div class="db-modal-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="modalTitle">
+
+        <div class="db-top">
+            <h2 id="modalTitle">
+                Thông tin chi tiết
+            </h2>
+
+            <button class="db-button"
+                    id="closeModal"
+                    type="button">
+                <i class="bi bi-x-lg"></i>
+                Đóng
+            </button>
+        </div>
+
+        <div id="detailContent"></div>
+
+        <div class="db-actions">
+            <a id="detailEdit"
+               class="db-button primary"
+               href="#">
+                <i class="bi bi-pencil-square"></i>
+                Chỉnh sửa bản ghi
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
